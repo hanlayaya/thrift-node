@@ -1,0 +1,67 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Thrift Test Client</title>
+  <style>
+    .btn {
+      width: 100px;
+      height: 40px;
+      background: #2196f3;
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      border-radius: 8px;
+    }
+    input {
+      width: 200px;
+      height: 40px;
+      border-radius: 8px;
+      border: 1px solid #dedede;
+    }
+    input:focus,
+    input:active {
+      border: 1px solid #dedede!important;
+    }
+  </style>
+</head>
+<body>
+  <div style="text-align: center;padding-top: 50px;"> 
+    <label for="name">姓名：</label>
+    <input type="text" label="姓名" id="name">
+    <label for="name">年龄：</label>
+    <input type="number" label="年龄" id="age">
+    <button onclick="call()" class="btn">测 试</button>
+    <p id="result"></p>
+  </div>
+  <script src="thrift.js"></script>
+  <script src="../gen-js/app_types.js"></script>
+  <script src="../gen-js/App.js"></script>
+  <script>
+    // Thrift的序列化协议:
+    // TBinaryProtocol：二进制编码格式进行数据传输
+    // TCompactProtocol：高效率的、密集的二进制编码格式进行数据传输
+    // TJSONProtocol： 使用JSON文本的数据编码协议进行数据传输
+    // TSimpleJSONProtocol：只提供JSON只写的协议，适用于通过脚本语言解析
+    var transport = new Thrift.Transport("http://127.0.0.1:7421/thrift");
+    var protocol = new Thrift.TJSONProtocol(transport);
+    var client = new Service.AppClient(protocol);
+
+
+    function call(){
+        var params = new Service.Information({
+            name: document.getElementById('name').value,
+            age:  document.getElementById('age').value,
+        });
+        console.log('params')
+        console.log(params)
+        client.add(params, function (result) {
+          console.log('result');
+          console.log(result);
+          document.getElementById('result').innerText = result;
+        })
+    }
+  </script>
+  <script>
+  </script>
+</body>
+</html>
